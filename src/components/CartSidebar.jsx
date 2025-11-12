@@ -50,7 +50,11 @@ const CartSidebar = ({ isOpen, onClose }) => {
                     className="relative flex items-start"
                   >
                     <div>
-                      <Image size={60} strokeWidth={0.5} className="mt-2" />
+                      <Image
+                        size={60}
+                        strokeWidth={0.5}
+                        className="mt-2 p-1 bg-gray-50 rounded-sm shadow-sm"
+                      />
                     </div>
                     <div className="ml-5 w-55">
                       <p className="font-semibold">{item.product.name}</p>
@@ -58,7 +62,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
                         {item.product.group}
                       </p>
                       <p className="text-sm text-gray-500">
-                        ${item.product.price}
+                        ${item.product.price.toFixed(2)}
                       </p>
                       <button
                         className="text-gray-500 text-xs underline underline-offset-2 cursor-pointer"

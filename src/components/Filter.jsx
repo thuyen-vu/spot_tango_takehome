@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { groupData } from "../utilities";
 import { ChevronLeft, ChevronDown, X } from "lucide-react";
 
@@ -11,15 +12,20 @@ const Filter = ({
   setSelectedAvailability,
 }) => {
   const [expandedFilterGroups, setExpandedFilterGroups] = useState({
-    Category: true,
+    Category: false,
     Availability: false,
   });
-  const filterClass = "pb-3 mb-3 lg:border-b lg:border-gray-200";
+  const filterClass = "pb-3 mb-3 lg:border-b lg:border-gray-200 text-gray-500";
   const filterButtonClass =
     "w-full flex justify-between items-center hover:underline decoration-1 underline-offset-6 transition-all";
 
-  console.log(isFilterBarOpen);
-
+  const location = useLocation();
+  useEffect(() => {
+    setExpandedFilterGroups({
+      Category: false,
+      Availability: false,
+    });
+  }, [location.pathname]);
   const toggleFilterGroup = (fg) => {
     setExpandedFilterGroups({
       ...expandedFilterGroups,
@@ -50,14 +56,14 @@ const Filter = ({
             )}
           </div>
           {expandedFilterGroups["Category"] ? (
-            <ChevronDown size={15} />
+            <ChevronDown size={15} className="text-gray-500" />
           ) : (
-            <ChevronLeft size={15} />
+            <ChevronLeft size={15} className="text-gray-500" />
           )}
         </button>
 
         {expandedFilterGroups["Category"] && (
-          <div className="mt-2 space-y-2">
+          <div className="mt-5 space-y-2">
             {Object.keys(groupData).map((group) => (
               <div
                 key={group}
@@ -93,7 +99,7 @@ const Filter = ({
         </button>
 
         {expandedFilterGroups["Availability"] && (
-          <div className="mt-2 space-y-2">
+          <div className="mt-5 space-y-2">
             {["Available", "Unavailable"].map((status) => (
               <div
                 key={status}

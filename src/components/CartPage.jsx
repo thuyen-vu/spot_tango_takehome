@@ -19,7 +19,7 @@ const CartPage = () => {
   return (
     <div className="min-h-screen bg-slate-50">
       <div className="max-w-7xl mx-auto px-5 py-10">
-        <h1 className="text-2xl font-bold mb-10">Your Cart</h1>
+        <h1 className="text-3xl font-bold mb-10">Your Cart</h1>
 
         <div className="flex flex-col space-y-7 lg:space-y-0 lg:flex-row lg:items-start">
           <div className="flex lg:w-3/5">
@@ -39,19 +39,23 @@ const CartPage = () => {
                       key={item.product.id}
                       className="flex justify-between items-start relative border-b pb-6 border-gray-200 last:border-none"
                     >
-                      <div className="flex space-x-3">
-                        <Image size={150} strokeWidth={0.5} />
+                      <div className="flex space-x-4">
+                        <Image
+                          size={150}
+                          strokeWidth={0.5}
+                          className="p-1 bg-gray-50 rounded-sm shadow-sm"
+                        />
 
                         <div className="flex flex-col justify-between">
                           <div>
                             <p className="font-semibold text-lg">
                               {item.product.name}
                             </p>
-                            <p className="text-gray-600">
+                            <p className="text-gray-500">
                               {item.product.group}
                             </p>
-                            <p className="text-gray-600">
-                              ${item.product.price}
+                            <p className="text-gray-500">
+                              ${item.product.price.toFixed(2)}
                             </p>
                           </div>
 

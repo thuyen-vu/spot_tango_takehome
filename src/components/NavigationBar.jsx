@@ -1,13 +1,12 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { ShoppingCart, Menu, X } from "lucide-react";
 import logo from "/logo.png";
 import { useCart } from "../utilities";
-import { CartSidebar } from "./";
 
 const NavigationBar = () => {
   const [isMenuOpened, setIsMenuOpened] = useState(false);
-  const [isCartBarOpen, setIsCartBarOpen] = useState(false);
+  const nav = useNavigate();
 
   const menuItems = [
     { label: "Shop All", route: "/shop-all" },
@@ -17,9 +16,24 @@ const NavigationBar = () => {
     { label: "Accessories", route: "/accessories" },
   ];
   const { totalQuantity } = useCart();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isMenuOpened) {
+        setIsMenuOpened(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [isMenuOpened]);
+
   return (
-    <div>
-      <nav className="py-8 border-b border-gray-200">
+    <div className="flex flex-col">
+      <nav className="py-8 border-b border-gray-200 shadow-xs">
         {/* Logo */}
         <div className="px-5 max-w-7xl flex items-center mx-auto">
           <Link to="/">
@@ -42,9 +56,7 @@ const NavigationBar = () => {
           </div>
 
           <button
-            onClick={() => {
-              setIsCartBarOpen(true);
-            }}
+            onClick={() => nav("/cart")}
             className="cursor-pointer relative ml-auto"
           >
             <ShoppingCart size={25} />
@@ -53,7 +65,7 @@ const NavigationBar = () => {
             )}
           </button>
           {/* Mobile Menu Toggle */}
-          <div className="lg:hidden flex items-cente ml-2">
+          <div className="lg:hidden flex items-center ml-3">
             <button
               onClick={() =>
                 isMenuOpened ? setIsMenuOpened(false) : setIsMenuOpened(true)
@@ -63,11 +75,34 @@ const NavigationBar = () => {
             </button>
           </div>
         </div>
-        <CartSidebar
-          isOpen={isCartBarOpen}
-          onClose={() => setIsCartBarOpen(false)}
-        />
       </nav>
+      {/* Mobile Menu */}
+      <div className="lg:hidden">
+        {/* Overlay */}
+        <div
+          className={`fixed inset-0 z-20 ${
+            isMenuOpened ? "pointer-events-auto" : "pointer-events-none"
+          }`}
+          onClick={() => setIsMenuOpened(false)}
+        ></div>
+        {/* Dropdown Menu */}
+        <div
+          className={`fixed right-0 z-30 flex flex-col w-100 bg-white shadow-md transform transition-transform duration-300 rounded-lg h-full ${
+            isMenuOpened ? "translate-x-0" : "translate-x-full"
+          } flex flex-col px-5 py-4`}
+        >
+          {menuItems.map((item) => (
+            <Link
+              to={item.route}
+              key={item.label}
+              className="hover:underline decoration-1 underline-offset-6 py-2"
+              onClick={() => setIsMenuOpened(false)}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

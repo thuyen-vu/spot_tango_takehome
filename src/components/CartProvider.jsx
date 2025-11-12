@@ -15,13 +15,13 @@ const CartProvider = ({ children }) => {
       },
     }));
     setTotalQuantity((prev) => prev + 1);
-    setSubtotalPrice((prev) => prev + product.price);
+    setSubtotalPrice((prev) => Math.abs(prev + product.price));
   };
 
   const removeFromCart = (itemId) => {
     setTotalQuantity((prev) => prev - cart[itemId].quantity);
-    setSubtotalPrice(
-      (prev) => prev - cart[itemId].quantity * cart[itemId].product.price
+    setSubtotalPrice((prev) =>
+      Math.abs(prev - cart[itemId].quantity * cart[itemId].product.price)
     );
     const newCart = { ...cart };
     delete newCart[itemId];
@@ -38,8 +38,8 @@ const CartProvider = ({ children }) => {
       },
     }));
     setTotalQuantity((prev) => prev - ogQuantity + quantity);
-    setSubtotalPrice(
-      (prev) => prev + (quantity - ogQuantity) * cart[itemId].product.price
+    setSubtotalPrice((prev) =>
+      Math.abs(prev + (quantity - ogQuantity) * cart[itemId].product.price)
     );
     if (quantity === 0) {
       const newCart = { ...cart };
