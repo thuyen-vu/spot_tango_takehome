@@ -1,7 +1,12 @@
 import { useCart } from "../utilities";
 
+/*
+  Button to control item quantity.
+*/
+
 const QuantityButton = ({ item }) => {
   const { updateQuantity } = useCart();
+
   return (
     <div className="flex items-center justify-between space-x-2 px-3 py-0.5 border border-gray-300 rounded-full w-25">
       <button

@@ -1,19 +1,26 @@
-import { SlidersHorizontal } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { SlidersHorizontal } from "lucide-react";
 import { useCart, groupData } from "../utilities.js";
 import { CartSidebar, Filter } from "./";
 
+/*
+  Products Component: Fetches and displays products in a grid with filtering by category and availability. 
+  Allows adding available items to the cart and shows a cart sidebar when items are added. 
+  Includes responsive filter and product layout for both desktop and mobile views.
+*/
+
 const Products = ({ group }) => {
-  const [productsData, setProductsData] = useState([]);
-  const [selectedGroups, setSelectedGroups] = useState([]);
-  const [selectedAvailability, setSelectedAvailability] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [productsData, setProductsData] = useState([]); // Store fetched products
+  const [selectedGroups, setSelectedGroups] = useState([]); // Currently selected product group filter
+  const [selectedAvailability, setSelectedAvailability] = useState(""); // Currently selected availability filter
+  const [errorMessage, setErrorMessage] = useState(""); // Error messages during fetch
   const [isCartBarOpen, setIsCartBarOpen] = useState(false);
   const [isFilterBarOpen, setIsFilterBarOpen] = useState(false);
 
   const { addToCart } = useCart();
 
+  // Fetch product data on component mount
   useEffect(() => {
     fetch(
       "https://s3.us-east-1.amazonaws.com/assets.spotandtango/products.json"
@@ -25,12 +32,14 @@ const Products = ({ group }) => {
       );
   }, []);
 
+  // Reset filters when navigating to a new page
   const location = useLocation();
   useEffect(() => {
     setSelectedGroups([]);
     setSelectedAvailability("");
   }, [location.pathname]);
 
+  // Filter products based on selected category and availability
   const filteredProducts = productsData.filter((product) => {
     const matchesGroup =
       (selectedGroups.length === 0 && location.pathname === "/shop-all") ||
@@ -50,13 +59,15 @@ const Products = ({ group }) => {
 
   return (
     <div className="max-w-7xl mx-auto px-5">
+
       {/* Product Page Heading */}
       <h1 className="text-4xl mt-10 mb-17">
         {group === "" ? "All Products" : groupData[group].label}
       </h1>
 
       <div className="items-start flex">
-        {/* Filter */}
+
+        {/* Filter (desktop + mobile) */}
         <Filter
           {...{
             isFilterBarOpen,
@@ -87,6 +98,7 @@ const Products = ({ group }) => {
                     className="flex flex-col space-y-3 w-full max-w-[300px] justify-between items-center p-7 border border-gray-200 rounded-lg shadow-sm h-130"
                   >
                     <div className="relative">
+                      {/* Lucide icon image, hidden on hover */}
                       <Image
                         strokeWidth={0.5}
                         className={`absolute inset-0 w-full h-full ${
@@ -96,17 +108,20 @@ const Products = ({ group }) => {
                             : "p-7"
                         } object-cover transition-opacity duration-300 hover:opacity-0 bg-gray-50 rounded-md`}
                       />
+                      {/* Placeholder image shown when hovering */}
                       <img
                         src={`https://placehold.co/300/f9fafb/black?text=${encodeURIComponent(
                           product.group
                         )}`}
                         className="block rounded-md shadow-sm"
                       />
+                      {/* Low-opacity overlay if product is unavailable */}
                       {product.status === "Unavailable" && (
                         <div className="absolute inset-0 bg-black opacity-5 rounded-md" />
                       )}
                     </div>
 
+                    {/* Product name and group */}
                     <div>
                       <p className="text-lg text-center">{product.name}</p>
                       <p className="text-sm text-gray-600 text-center">
@@ -114,6 +129,7 @@ const Products = ({ group }) => {
                       </p>
                     </div>
 
+                    {/* Price and MSRP */}
                     <div className="flex space-x-2 items-end">
                       {product.msrp > product.price ? (
                         <>
@@ -130,11 +146,13 @@ const Products = ({ group }) => {
                         </p>
                       )}
                     </div>
-
+                    
+                    {/* Savings */}
                     <p className="text-sm text-red-600 font-semibold">
                       SAVE ${Math.round(product.msrp - product.price)}
                     </p>
 
+                    {/* Add to Cart / Sold Out button */}
                     {product.status === "Available" ? (
                       <button
                         onClick={() => {

@@ -1,3 +1,8 @@
+
+/* 
+  Footer for entire app.
+*/
+
 const Footer = () => {
   return (
     <div>

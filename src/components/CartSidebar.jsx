@@ -1,15 +1,16 @@
-import { useCart, groupData } from "../utilities";
-import { X, ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { X, ShoppingCart } from "lucide-react";
 import { QuantityButton } from "./";
+import { useCart, groupData } from "../utilities";
 
 const CartSidebar = ({ isOpen, onClose }) => {
+  // Extract cart data and functions from custom hook
   const { cart, removeFromCart, totalQuantity, subtotalPrice } = useCart();
   const nav = useNavigate();
 
   return (
     <>
-      {/* Overlay */}
+      {/* A semi-transparent background that appears behind the sidebar when it's open */}
       <div
         className={`fixed inset-0 z-50 bg-black transition-opacity ${
           isOpen
@@ -19,7 +20,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
         onClick={onClose}
       ></div>
 
-      {/* Sidebar */}
+      {/* Main Sliding Cart Panel */}
       <div
         className={`fixed right-0 top-0 h-full w-110 bg-white z-50 transform transition-transform duration-300 ${
           isOpen ? "translate-x-0" : "translate-x-full"
@@ -42,25 +43,29 @@ const CartSidebar = ({ isOpen, onClose }) => {
           ) : (
             Object.values(cart).map((item) => {
               const Image = groupData[item.product.group].img;
-
+              // Cart Item
               return (
                 <>
                   <div
                     key={item.product.id}
                     className="relative flex items-start"
                   >
-                    <div>
-                      <Image
-                        size={60}
-                        strokeWidth={0.5}
-                        className="mt-2 p-1 bg-gray-50 rounded-sm shadow-sm"
-                      />
-                    </div>
+
+                    {/* Product Image */}
+                    <Image
+                      size={60}
+                      strokeWidth={0.5}
+                      className="mt-2 p-1 bg-gray-50 rounded-sm shadow-sm"
+                    />
+
+                    {/* Product Details */}
                     <div className="ml-5 w-55">
                       <p className="font-semibold">{item.product.name}</p>
                       <p className="text-sm text-gray-500">
                         {item.product.group}
                       </p>
+
+                      {/* Unit Price */}
                       <p className="text-sm text-gray-500">
                         ${item.product.price.toFixed(2)}
                       </p>
@@ -72,10 +77,12 @@ const CartSidebar = ({ isOpen, onClose }) => {
                       </button>
                     </div>
 
+                    {/* Product Total Price */}
                     <div className="absolute right-0 flex flex-col items-end">
                       <p>${(item.product.price * item.quantity).toFixed(2)}</p>
                     </div>
-
+                    
+                    {/* Quantity Selector */}
                     <div className="absolute right-0 bottom-0">
                       <QuantityButton item={item} />
                     </div>
@@ -86,8 +93,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
           )}
         </div>
 
-        {/* Footer / Total */}
-
+        {/* Footer: Cart Total and Checkout */}
         <div className="p-5 border-t border-gray-200">
           <div className="flex justify-between items-center font-semibold text-lg">
             <span>Subtotal</span>

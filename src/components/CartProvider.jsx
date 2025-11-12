@@ -1,8 +1,18 @@
 import { useState } from "react";
 import { CartContext } from "../utilities.js";
 
+/*
+  Writes states and utility functions to input as props into the CartContext component and 
+  returns it to use as a context provider.
+  Used to centralize cart state across the application.
+*/
+
 const CartProvider = ({ children }) => {
-  const [cart, setCart] = useState({}); // { [productId]: { product, quantity } }
+  // Cart state: stores items keyed by product id
+  // Ex: { "214aaffb-2230-49f8-a18b-9e7b19e01bfd": { product : {...}, quantity: 2 } }
+  const [cart, setCart] = useState({});
+
+  // Update total quantity and price each time we update the cart for performance
   const [totalQuantity, setTotalQuantity] = useState(0);
   const [subtotalPrice, setSubtotalPrice] = useState(0);
 
@@ -15,6 +25,8 @@ const CartProvider = ({ children }) => {
       },
     }));
     setTotalQuantity((prev) => prev + 1);
+    
+    // Use Math.abs() to avoid negative zeroes from float arithmetic
     setSubtotalPrice((prev) => Math.abs(prev + product.price));
   };
 

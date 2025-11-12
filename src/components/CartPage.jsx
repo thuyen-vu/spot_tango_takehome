@@ -1,12 +1,23 @@
-import { useCart, groupData } from "../utilities.js";
 import { Link } from "react-router-dom";
 import { Trash, ShoppingCart as Cart, Lock } from "lucide-react";
+import { useCart, groupData } from "../utilities.js";
 import { QuantityButton } from "./";
 
+/*
+  Displays items in cart with details.
+  Shows order summary with subtotal, shipping, tax, and total savings. 
+  Provides buttons to remove items, adjust quantities, and proceed to checkout.
+  Handles empty cart state with a prompt to continue shopping.
+*/
+
 const CartPage = () => {
+  // Extract cart data and functions from custom hook
   const { cart: cartObject, removeFromCart, subtotalPrice } = useCart();
+
+  // Object to array for mapping
   const cart = Object.values(cartObject);
 
+  // Total cart savings
   const savings = cart
     .reduce(
       (sum, item) =>
@@ -19,11 +30,15 @@ const CartPage = () => {
   return (
     <div className="min-h-screen bg-slate-50">
       <div className="max-w-7xl mx-auto px-5 py-10">
+
+        {/* Page Heading */}
         <h1 className="text-3xl font-bold mb-10">Your Cart</h1>
 
+        {/* Main Layout: Cart Items (Left) + Order Summary (Right) */}
         <div className="flex flex-col space-y-7 lg:space-y-0 lg:flex-row lg:items-start">
+
+          {/* Cart Items Section */}
           <div className="flex lg:w-3/5">
-            {/* Cart */}
             <div
               className={`w-full lg:w-[90%] bg-white rounded-xl p-7 space-y-5 min-h-100 ${
                 cart && cart.length === 0 && "flex flex-col justify-center"
@@ -38,14 +53,17 @@ const CartPage = () => {
                     <div
                       key={item.product.id}
                       className="flex justify-between items-start relative border-b pb-6 border-gray-200 last:border-none"
-                    >
+                    > 
+                    {/* Item */}
                       <div className="flex space-x-4">
+                        {/* Product Image */}
                         <Image
                           size={150}
                           strokeWidth={0.5}
                           className="p-1 bg-gray-50 rounded-sm shadow-sm"
                         />
 
+                        {/* Item Details (Name, Group, Price, Quantity) */}
                         <div className="flex flex-col justify-between">
                           <div>
                             <p className="font-semibold text-lg">
@@ -59,12 +77,14 @@ const CartPage = () => {
                             </p>
                           </div>
 
+                          {/* Control Quantity Input */}
                           <div className="flex space-x-2">
                             <QuantityButton item={item} />
                           </div>
                         </div>
                       </div>
 
+                      {/* Remove Item Button and Price */}
                       <div className="flex flex-col justify-between h-[150px]">
                         <button
                           className="cursor-pointer self-end"
@@ -72,7 +92,6 @@ const CartPage = () => {
                         >
                           <Trash size={15} />
                         </button>
-
                         {msrp > price ? (
                           <div>
                             <p className="text-gray-500 text-sm float-right">
@@ -103,7 +122,8 @@ const CartPage = () => {
               )}
             </div>
           </div>
-
+          
+          {/* Order Summary Section */}
           <div className="lg:w-2/5 bg-white rounded-xl py-10 px-15 min-h-100 space-y-1 flex flex-col justify-between">
             <div>
               <h1 className="font-bold text-2xl mb-7">Order Summary</h1>

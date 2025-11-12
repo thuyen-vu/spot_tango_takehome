@@ -4,6 +4,11 @@ import { ShoppingCart, Menu, X } from "lucide-react";
 import logo from "/logo.png";
 import { useCart } from "../utilities";
 
+/* 
+  Navigation bar for site navigation.
+  Includes logo, desktop menu, mobile menu with toggle, and cart icon.
+ */
+
 const NavigationBar = () => {
   const [isMenuOpened, setIsMenuOpened] = useState(false);
   const nav = useNavigate();
@@ -15,8 +20,10 @@ const NavigationBar = () => {
     { label: "Mobile", route: "/mobile" },
     { label: "Accessories", route: "/accessories" },
   ];
-  const { totalQuantity } = useCart();
 
+  const { totalQuantity } = useCart(); // Get cart quantity from custom hook
+
+  // Close mobile menu on scroll
   useEffect(() => {
     const handleScroll = () => {
       if (isMenuOpened) {
@@ -34,14 +41,15 @@ const NavigationBar = () => {
   return (
     <div className="flex flex-col">
       <nav className="py-8 border-b border-gray-200 shadow-xs">
+
         {/* Logo */}
         <div className="px-5 max-w-7xl flex items-center mx-auto">
           <Link to="/">
             <img src={logo} className="h-8" />
           </Link>
 
+          {/* Desktop Menu */}
           <div className="absolute left-1/2 transform -translate-x-1/2">
-            {/* Desktop Menu */}
             <div className="hidden lg:flex space-x-8">
               {menuItems.map((item) => (
                 <Link
@@ -55,6 +63,7 @@ const NavigationBar = () => {
             </div>
           </div>
 
+          {/* Cart icon with badge to show if it contains items */}
           <button
             onClick={() => nav("/cart")}
             className="cursor-pointer relative ml-auto"
@@ -64,6 +73,7 @@ const NavigationBar = () => {
               <div className="absolute top-0.5 -right-0.5 bg-red-500 rounded-full h-2 w-2" />
             )}
           </button>
+
           {/* Mobile Menu Toggle */}
           <div className="lg:hidden flex items-center ml-3">
             <button
@@ -76,16 +86,19 @@ const NavigationBar = () => {
           </div>
         </div>
       </nav>
+
       {/* Mobile Menu */}
       <div className="lg:hidden">
-        {/* Overlay */}
+
+        {/* Overlay that closes the menu when clicked */}
         <div
           className={`fixed inset-0 z-20 ${
             isMenuOpened ? "pointer-events-auto" : "pointer-events-none"
           }`}
           onClick={() => setIsMenuOpened(false)}
-        ></div>
-        {/* Dropdown Menu */}
+        />
+
+        {/* Sliding Menu */}
         <div
           className={`fixed right-0 z-30 flex flex-col w-100 bg-white shadow-md transform transition-transform duration-300 rounded-lg h-full ${
             isMenuOpened ? "translate-x-0" : "translate-x-full"

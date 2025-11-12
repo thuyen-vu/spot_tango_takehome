@@ -3,6 +3,12 @@ import { useLocation } from "react-router-dom";
 import { groupData } from "../utilities";
 import { ChevronLeft, ChevronDown, X } from "lucide-react";
 
+/* 
+  Filter component for product page.
+  Supports Category and Availability filtering.
+  Responsive: shows as sidebar on desktop and slide-in menu on mobile.
+*/
+
 const Filter = ({
   isFilterBarOpen,
   setIsFilterBarOpen,
@@ -11,14 +17,18 @@ const Filter = ({
   selectedAvailability,
   setSelectedAvailability,
 }) => {
+  // Track which filter sections are expanded
   const [expandedFilterGroups, setExpandedFilterGroups] = useState({
     Category: false,
     Availability: false,
   });
+
+  // Reusable Tailwind classes
   const filterClass = "pb-3 mb-3 lg:border-b lg:border-gray-200 text-gray-500";
   const filterButtonClass =
     "w-full flex justify-between items-center hover:underline decoration-1 underline-offset-6 transition-all";
 
+  // Collapse filter group sections when route changes
   const location = useLocation();
   useEffect(() => {
     setExpandedFilterGroups({
@@ -26,6 +36,8 @@ const Filter = ({
       Availability: false,
     });
   }, [location.pathname]);
+
+  // Toggle visibility of a filter group
   const toggleFilterGroup = (fg) => {
     setExpandedFilterGroups({
       ...expandedFilterGroups,
@@ -33,6 +45,7 @@ const Filter = ({
     });
   };
 
+  // Toggle selection of a category checkbox
   const handleCheckboxChange = (group) => {
     if (selectedGroups.includes(group)) {
       setSelectedGroups(selectedGroups.filter((g) => g !== group));
@@ -41,9 +54,10 @@ const Filter = ({
     }
   };
 
+  // Shared filter UI elements for both desktop and mobile
   const sharedFilterElements = (
     <>
-      {/* Category Filter */}
+      {/* Category Filter Section (Laptops, Tablets, Mobile, Accessories) */}
       <div className={filterClass}>
         <button
           className={filterButtonClass}
@@ -51,6 +65,8 @@ const Filter = ({
         >
           <div className="flex">
             Category
+
+            {/* Show number of selected categories */}
             {selectedGroups.length > 0 && (
               <p className="ml-1">({selectedGroups.length})</p>
             )}
@@ -62,6 +78,7 @@ const Filter = ({
           )}
         </button>
 
+        {/* List of category checkboxes */}
         {expandedFilterGroups["Category"] && (
           <div className="mt-5 space-y-2">
             {Object.keys(groupData).map((group) => (
@@ -84,7 +101,7 @@ const Filter = ({
         )}
       </div>
 
-      {/* Availability Filter */}
+      {/* Availability Filter Section */}
       <div className={filterClass}>
         <button
           className={filterButtonClass}
@@ -98,6 +115,7 @@ const Filter = ({
           )}
         </button>
 
+        {/* List of availability checkboxes */}
         {expandedFilterGroups["Availability"] && (
           <div className="mt-5 space-y-2">
             {["Available", "Unavailable"].map((status) => (
@@ -131,8 +149,10 @@ const Filter = ({
   );
   return (
     <>
+      {/* Mobile Filter Sidebar */}
       <div className="lg:hidden">
-        {/* Overlay */}
+
+        {/* Semi-transparent overlay behind sidebar */}
         <div
           className={`fixed inset-0 z-40 bg-black transition-opacity ${
             isFilterBarOpen
@@ -142,23 +162,25 @@ const Filter = ({
           onClick={() => setIsFilterBarOpen(false)}
         />
 
-        {/* Mobile Filter Sidebar */}
+        {/* Sliding sidebar menu */}
         <div
           className={`fixed right-0 top-0 h-full w-110 bg-white z-50 transform transition-transform duration-300 ${
             isFilterBarOpen ? "translate-x-0" : "translate-x-full"
           } flex flex-col`}
         >
-          {/* Header */}
+          {/* Header w close button */}
           <div className="flex justify-between items-center p-5 border-b border-gray-200 mb-7">
             <h2 className="text-lg font-semibold ml-44">Filter</h2>
             <button onClick={() => setIsFilterBarOpen(false)}>
               <X size={20} />
             </button>
           </div>
-          {/* Body */}
+
+          {/* Filter options */}
           <div className="flex-1 overflow-y-auto px-10">
             {sharedFilterElements}
           </div>
+
           {/* Footer */}
           <div className="p-5 border-t border-gray-200">
             <button
@@ -171,13 +193,11 @@ const Filter = ({
         </div>
       </div>
 
-      <>
         {/* Desktop Product Filter */}
         <aside className={`hidden lg:flex flex-col lg:w-1/4 mr-8 `}>
           <p className={filterClass}>Filter:</p>
           {sharedFilterElements}
         </aside>
-      </>
     </>
   );
 };
